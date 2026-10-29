@@ -1,0 +1,121 @@
+# ==========================================
+# Environment Variables & Secrets
+# ==========================================
+.env
+.env.*
+!.env.example
+
+# ==========================================
+# Python Virtual Environments
+# ==========================================
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ==========================================
+# Byte-compiled / Optimized / DLL files
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# ==========================================
+# Distribution / Packaging / Builds
+# ==========================================
+build/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ==========================================
+# Jupyter Notebooks
+# ==========================================
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# ==========================================
+# Unit test / Coverage / Linting caches
+# ==========================================
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py.cover
+.hypothesis/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.gradio/
+
+# ==========================================
+# Large Datasets, Audio & Training Data
+# ==========================================
+plantvillage dataset/
+dataset/
+datasets/
+data/train*.jsonl
+data/eval*.jsonl
+audio/
+*.wav
+*.mp3
+
+# Keep small curated sample/benchmark data
+!data/core_schemes.jsonl
+!data/asr_benchmark.json
+
+# ==========================================
+# Large ML Model Weights & Checkpoints
+# (Files > 50-100MB should not be tracked directly in Git)
+# ==========================================
+adapters/
+mlx-yojana/
+*.safetensors
+*.bin
+*.ckpt
+*.h5
+*.tflite
+# Uncomment below if you store model weights in cloud/LFS rather than Git:
+# *.pt
+# *.pth
+# *.npz
+
+# ==========================================
+# Logs & Databases
+# ==========================================
+*.log
+*.sqlite3
+*.sqlite3-journal
+
+# ==========================================
+# Operating System & Editor Files
+# ==========================================
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
+
