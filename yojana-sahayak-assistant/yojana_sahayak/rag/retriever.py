@@ -73,7 +73,7 @@ class SchemeRetriever:
             self._load_jsonl(str(train), docs, seen, require_clean=True)
 
         print(f"  Indexing {len(docs)} scheme facts...")
-        texts = [f"{d['scheme']} {d['field']}: {d['q']}" for d in docs]
+        texts = [f"{d['scheme']} ({d['field']}): {d['q']} | Details: {d['a']}" for d in docs]
         embeddings = self._encoder.encode(texts, batch_size=256, show_progress_bar=True)
         embeddings = embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True)
 
@@ -160,6 +160,9 @@ class SchemeRetriever:
                     require_clean: bool = True) -> None:
         with open(path, encoding="utf-8") as f:
             for line in f:
+                line = line.strip()
+                if not line:
+                    continue
                 rec = json.loads(line)
                 msgs = rec.get("messages", [])
                 key = (rec["scheme_name"], rec["field"])

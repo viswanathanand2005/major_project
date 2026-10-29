@@ -7,7 +7,7 @@ cd major_project
 pip install fastapi "uvicorn[standard]" python-multipart
 ```
 
-The agent dependencies (torch, sentence-transformers, etc.) should already
+The agent dependencies (tensorflow, pillow, sentence-transformers, etc.) should already
 be installed from the individual submodule setups.
 
 ---
@@ -18,10 +18,6 @@ be installed from the individual submodule setups.
 cd major_project
 uvicorn api:app --reload --port 8000
 ```
-
-> **Note:** Run with a single worker (`--workers 1`) because the disease
-> agent temporarily changes the process working directory during model load.
-> `--reload` (default: single worker) is fine for development.
 
 The interactive API docs are at **http://localhost:8000/docs** once running.
 

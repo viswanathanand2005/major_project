@@ -135,6 +135,41 @@ _CORE_SCHEMES_EN = {
         "Kisan Credit Card (KCC) Eligibility: Individual farmers, joint borrowers, tenant farmers, sharecroppers, oral lessees, and Self Help Groups (SHGs). "
         "Also extended to allied agricultural sectors such as dairy, animal husbandry, and fisheries for working capital and short-term credit needs."
     ),
+    ("Kisan Credit Card", "benefits"): (
+        "Kisan Credit Card (KCC) Benefits: Short-term crop loans up to Rs. 3 lakh at a subsidized interest rate of 7%, further reduced to 4% with prompt repayment. "
+        "Collateral-free loans available up to Rs. 1.60 lakh, with flexible revolving credit for seeds, fertilizers, and farm maintenance."
+    ),
+    ("Pradhan Mantri Fasal Bima Yojana", "eligibility"): (
+        "PMFBY Eligibility: All farmers including sharecroppers and tenant farmers growing notified crops in notified areas. "
+        "Provides comprehensive insurance coverage against non-preventable natural risks like drought, flood, hailstorm, cyclones, pests, and post-harvest losses."
+    ),
+    ("Pradhan Mantri Fasal Bima Yojana", "benefits"): (
+        "PMFBY Benefits: Very low farmer premium rates — 2% for Kharif crops, 1.5% for Rabi crops, and 5% for annual commercial/horticultural crops. "
+        "Remaining premium is subsidized by the government. Full claim compensation is directly transferred to bank accounts based on crop loss assessment."
+    ),
+    ("Pradhan Mantri Fasal Bima Yojana", "application_process"): (
+        "How to claim/apply for PMFBY: Apply online at pmfby.gov.in, via the Crop Insurance App, at your bank branch, or at the nearest CSC. "
+        "In case of localized crop loss, intimation must be reported within 72 hours via the portal, app, or toll-free helpline 14447."
+    ),
+    ("PM KUSUM Solar Pump Scheme", "eligibility"): (
+        "PM-KUSUM Eligibility: Individual farmers, groups of farmers, FPOs, and cooperatives with cultivable land who want to install solar irrigation pumps."
+    ),
+    ("PM KUSUM Solar Pump Scheme", "benefits"): (
+        "PM-KUSUM Benefits: Provides up to 60% subsidy (30% Central + 30% State government) for installing standalone solar agricultural pumps, "
+        "saving high diesel and electricity costs. The farmer pays only 10% to 40% of the total installation cost."
+    ),
+    ("Pradhan Mantri Krishi Sinchayee Yojana", "eligibility"): (
+        "PMKSY (Per Drop More Crop) Eligibility: All farmers with cultivable land and water sources. "
+        "Offers up to 55% subsidy for small and marginal farmers (45% for other farmers) to adopt water-saving drip and sprinkler micro-irrigation systems."
+    ),
+    ("Sub-Mission on Agricultural Mechanization", "eligibility"): (
+        "SMAM (Farm Machinery) Eligibility: Small, marginal, SC/ST, and women farmers. "
+        "Offers 40% to 50% subsidy on purchase of tractors, rotavators, power tillers, and implements, plus 40% assistance for setting up Custom Hiring Centres (CHCs)."
+    ),
+    ("Soil Health Card Scheme", "benefits"): (
+        "Soil Health Card Benefits: Free testing of soil samples across 12 chemical and physical parameters (NPK, pH, micronutrients). "
+        "Provides crop-wise fertilizer dosage recommendations to lower input costs and improve soil fertility."
+    ),
     ("Sukanya Samriddhi Yojana", "eligibility"): (
         "Sukanya Samriddhi Yojana Eligibility: Parents or legal guardians of a girl child below 10 years of age (maximum 2 accounts per family). "
         "Accounts can be opened at any post office or authorized commercial bank with a minimum annual deposit of Rs. 250 and maximum Rs. 1.5 lakh."
@@ -145,8 +180,8 @@ _CORE_SCHEMES_EN = {
     ),
 }
 
-def _generate_with_gemini(query: str, context: str, language: str = "English", timeout_sec: int = 6) -> Optional[str]:
-    """Dynamically generate a multilingual response using LangChain and Gemini if configured."""
+def _generate_with_gemini(query: str, context: str, language: str = "English", timeout_sec: int = 10) -> Optional[str]:
+    """Dynamically generate a comprehensive multilingual response using LangChain and Gemini if configured."""
     import os
     from dotenv import load_dotenv
     load_dotenv()
@@ -157,14 +192,20 @@ def _generate_with_gemini(query: str, context: str, language: str = "English", t
         from langchain_google_genai import ChatGoogleGenerativeAI
         from langchain_core.prompts import ChatPromptTemplate
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.5-flash",
+            model="gemini-3.8-flash",
             google_api_key=key,
             temperature=0.2,
             request_timeout=timeout_sec,
+            max_retries=0,
         )
         prompt = ChatPromptTemplate.from_template(
-            "You are CultivAI's expert assistant for Indian government welfare schemes.\n"
-            "Answer the user's question accurately using ONLY the official scheme context provided below.\n\n"
+            "You are CultivAI's expert agricultural assistant for Indian government welfare schemes.\n"
+            "Provide a comprehensive, actionable, and detailed answer for the farmer based on the question and official context below.\n\n"
+            "Structure your response with clear sections:\n"
+            "- Scheme Name & Overview\n"
+            "- Key Benefits & Financial Assistance (amounts, subsidies, insurance terms)\n"
+            "- Eligibility Criteria (land size, categories, exclusions)\n"
+            "- Application Process & Required Documents (portals, CSC, Aadhaar, land records)\n\n"
             "CRITICAL: Write your entire response in: {language}.\n\n"
             "Official Scheme Context:\n{context}\n\n"
             "Farmer Question:\n{question}"
@@ -390,26 +431,29 @@ class SchemeAgent(BaseAgent):
         if llm_used and answer:
             summary = answer.strip()
         else:
-            top = rag_results[0]
-            scheme_key = (top.get("scheme"), top.get("field"))
+            is_en = language.strip().lower().startswith("en")
+            scheme_groups: dict[str, list[str]] = {}
 
-            if language.strip().lower().startswith("en") and scheme_key in _CORE_SCHEMES_EN:
-                summary = _CORE_SCHEMES_EN[scheme_key]
-            else:
-                summary = (
-                    f"Regarding {top['scheme']} ({top['field']}): {top['answer']}"
-                )
+            for item in rag_results:
+                scheme_name = item.get("scheme", "")
+                field_name = item.get("field", "")
+                scheme_key = (scheme_name, field_name)
 
-            if len(rag_results) > 1:
-                other_schemes = ", ".join(
-                    r["scheme"] for r in rag_results[1:]
-                    if r["scheme"] != top["scheme"]
-                )
-                if other_schemes:
-                    if language.strip().lower().startswith("en"):
-                        summary += f" Related schemes: {other_schemes}."
-                    else:
-                        summary += f" Anya sambandhit yojanaayein: {other_schemes}."
+                if is_en and scheme_key in _CORE_SCHEMES_EN:
+                    fact_text = _CORE_SCHEMES_EN[scheme_key]
+                else:
+                    fact_text = f"Regarding {scheme_name} ({field_name}): {item.get('answer', '')}"
+
+                if scheme_name not in scheme_groups:
+                    scheme_groups[scheme_name] = []
+                scheme_groups[scheme_name].append(fact_text)
+
+            blocks = []
+            for s_name, facts in scheme_groups.items():
+                facts_str = "\n".join(f"  - {f}" for f in facts)
+                blocks.append(f"### {s_name}\n{facts_str}")
+
+            summary = "\n\n".join(blocks)
 
         # Build source list enriched with the specific schemes found
         scheme_names = sorted({r["scheme"] for r in rag_results})

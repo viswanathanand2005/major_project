@@ -26,10 +26,11 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-# ── sys.path: make cultivai/, disease_detection/, and yojana_sahayak/ importable
+# ── sys.path: make cultivai/, plant_disease_detection/, and yojana_sahayak/ importable
 _ROOT = Path(__file__).parent.resolve()
 _YOJANA_ROOT = _ROOT / "yojana-sahayak-assistant"
-for _p in [str(_ROOT), str(_YOJANA_ROOT)]:
+_DISEASE_ROOT = _ROOT / "plant_disease_detection"
+for _p in [str(_ROOT), str(_YOJANA_ROOT), str(_DISEASE_ROOT)]:
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
@@ -67,7 +68,7 @@ _scheme_agent = None
 def _get_disease_agent():
     global _disease_agent
     if _disease_agent is None:
-        from disease_detection.cultivai_agent import PlantDiseaseAgent
+        from plant_disease_detection.cultivai_agent import PlantDiseaseAgent
         _disease_agent = PlantDiseaseAgent()
     return _disease_agent
 
@@ -204,7 +205,7 @@ async def disease_endpoint(
             status_code=503,
             detail=(
                 f"Plant Disease Agent is not available: {exc}. "
-                "Ensure torch and torchvision are installed."
+                "Ensure tensorflow and pillow are installed."
             ),
         )
 
