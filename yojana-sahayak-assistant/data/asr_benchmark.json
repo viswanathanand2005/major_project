@@ -1,0 +1,65 @@
+{
+  "model": "mlx-community/whisper-large-v3-turbo",
+  "avg_wer": 0.2393,
+  "avg_cer": 0.1082,
+  "avg_rtf": 0.375,
+  "avg_latency_s": 1.875,
+  "utterances": [
+    {
+      "id": "utt_01",
+      "reference": "PM Kisan ke liye kaun eligible hai?",
+      "hypothesis": "पी-एम किसान के लिए कौन इलेजवल हैं?",
+      "wer": 0.2857,
+      "cer": 0.1562,
+      "latency_s": 4.536,
+      "rtf": 0.9071,
+      "audio_dur": 5,
+      "reference_devanagari": "पीएम किसान के लिए कौन एलिजिबल है"
+    },
+    {
+      "id": "utt_02",
+      "reference": "Ayushman Bharat mein kitna paisa milta hai?",
+      "hypothesis": "आइसमान भारत में कितना पैसा मिलता है?",
+      "wer": 0.1429,
+      "cer": 0.1081,
+      "latency_s": 1.169,
+      "rtf": 0.2338,
+      "audio_dur": 5,
+      "reference_devanagari": "आयुष्मान भारत में कितना पैसा मिलता है"
+    },
+    {
+      "id": "utt_03",
+      "reference": "PM Awas Yojana ke liye apply kaise karein?",
+      "hypothesis": "पी-म आवास योजना के लिए अपलाई कैसे करें",
+      "wer": 0.25,
+      "cer": 0.0513,
+      "latency_s": 1.19,
+      "rtf": 0.238,
+      "audio_dur": 5,
+      "reference_devanagari": "पीएम आवास योजना के लिए अप्लाई कैसे करें"
+    },
+    {
+      "id": "utt_04",
+      "reference": "Ujjwala Yojana mein free gas connection kaise milega?",
+      "hypothesis": "उज्जुला योजना में फिरीक ऐस कनेक्शन कैसे मिलेगा",
+      "wer": 0.375,
+      "cer": 0.1277,
+      "latency_s": 1.249,
+      "rtf": 0.2497,
+      "audio_dur": 5,
+      "reference_devanagari": "उज्ज्वला योजना में फ्री गैस कनेक्शन कैसे मिलेगा"
+    },
+    {
+      "id": "utt_05",
+      "reference": "Mudra loan ke liye kya documents chahiye?",
+      "hypothesis": "मुद्रा लोन के लिए क्या डाकुमेंट्स चाहिए",
+      "wer": 0.1429,
+      "cer": 0.0976,
+      "latency_s": 1.231,
+      "rtf": 0.2462,
+      "audio_dur": 5,
+      "reference_devanagari": "मुद्रा लोन के लिए क्या डॉक्यूमेंट्स चाहिए"
+    }
+  ],
+  "wer_note": "WER computed after Devanagari normalization of references"
+}

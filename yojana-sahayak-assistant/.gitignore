@@ -1,0 +1,49 @@
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Data (too large for git — download from HuggingFace)
+data/train.jsonl
+data/train_clean.jsonl
+data/train_v2.jsonl
+data/eval.jsonl
+data/eval_clean.jsonl
+data/eval_v2.jsonl
+
+# Keep core schemes (small, curated)
+!data/core_schemes.jsonl
+!data/asr_benchmark.json
+
+# Audio recordings
+audio/
+*.wav
+*.mp3
+
+# Model weights (download from HuggingFace)
+adapters/
+*.safetensors
+*.bin
+mlx-yojana/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.venv/
+venv/
+.v2env/
+.gradio/
